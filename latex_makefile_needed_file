@@ -1,0 +1,19 @@
+
+import re
+
+def match (command, settings):
+    if 'make' not in command.script:
+        return False
+    mo = re.match ('^make: \*\*\* No rule to make target \'.*\', needed by \'.*\'\.', command.stderr)
+    if mo:
+        return True
+    else:
+        return False
+
+def get_new_command (command, settings):
+    mo = re.match ('^make: \*\*\* No rule to make target \'(.*)\', needed by \'.*\'\.', command.stderr)
+    return 'touch \'%s\' && %s' % (mo.group(1), command.script)
+
+enabled_by_default = True
+requires_output = True
+priority = 1000
